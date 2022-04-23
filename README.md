@@ -1,5 +1,6 @@
 # Nginx Unit SDK
 [![Test](https://github.com/peknur/nginx-unit-sdk/actions/workflows/test.yml/badge.svg)](https://github.com/peknur/nginx-unit-sdk/actions/workflows/test.yml)
+[![Go Reference](https://pkg.go.dev/badge/github.com/peknur/nginx-unit-sdk/unit.svg)](https://pkg.go.dev/github.com/peknur/nginx-unit-sdk/unit)
 
 An unofficial [Nginx Unit](https://www.nginx.com/products/nginx-unit/) SDK for Go. 
 
