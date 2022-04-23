@@ -1,0 +1,99 @@
+[
+    {
+        "match": {
+            "uri": "/admin/*",
+            "scheme": "https",
+            "arguments": {
+                "mode": "strict",
+                "access": "!raw"
+            },
+            "cookies": {
+                "user_role": "admin"
+            }
+        },
+        "action": {
+            "pass": "applications/cms"
+        }
+    },
+    {
+        "match": {
+            "host": [
+                "blog.example.com",
+                "blog.*.org"
+            ],
+            "source": [
+                "*:8000-9000"
+            ]
+        },
+        "action": {
+            "pass": "applications/blogs/core"
+        }
+    },
+    {
+        "match": {
+            "host": [
+                "example.com"
+            ],
+            "source": [
+                "127.0.0.1-127.0.0.254:8080-8090"
+            ],
+            "uri": "/chat/*",
+            "query": [
+                "en-CA",
+                "en-IE",
+                "en-IN",
+                "en-UK",
+                "en-US"
+            ]
+        },
+        "action": {
+            "pass": "applications/chat"
+        }
+    },
+    {
+        "match": {
+            "host": [
+                "extwiki.example.com"
+            ]
+        },
+        "action": {
+            "pass": "applications/wiki/external"
+        }
+    },
+    {
+        "match": {
+            "uri": "/legacy/*"
+        },
+        "action": {
+            "return": 301,
+            "location": "https://legacy.example.com"
+        }
+    },
+    {
+        "match": {
+            "scheme": "http"
+        },
+        "action": {
+            "proxy": "http://127.0.0.1:8080"
+        }
+    },
+    {
+        "action": {
+            "share": [
+                "/www/$host$uri",
+                "/www/global_static$uri"
+            ],
+            "chroot": "/www/data/$host/",
+            "traverse_mounts": false,
+            "follow_symlinks": false,
+            "types": [
+                "image/*",
+                "video/*",
+                "application/json"
+            ],
+            "fallback": {
+                "proxy": "http://127.0.0.1:9000"
+            }
+        }
+    }
+]

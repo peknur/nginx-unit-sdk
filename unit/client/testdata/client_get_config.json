@@ -1,0 +1,212 @@
+{
+    "settings": {
+        "http": {
+            "header_read_timeout": 10,
+            "body_read_timeout": 10,
+            "send_timeout": 10,
+            "idle_timeout": 120,
+            "max_body_size": 6291456,
+            "static": {
+                "mime_types": {
+                    "text/plain": [
+                        ".log",
+                        "README",
+                        "CHANGES"
+                    ]
+                }
+            },
+            "discard_unsafe_fields": false
+        }
+    },
+    "listeners": {
+        "*:8000": {
+            "pass": "routes",
+            "tls": {
+                "certificate": [
+                    "example.com",
+                    "example.org"
+                ],
+                "conf_commands": {
+                    "ciphersuites": "TLS_CHACHA20_POLY1305_SHA256"
+                },
+                "session": {
+                    "cache_size": 10240,
+                    "timeout": 60,
+                    "tickets": [
+                        "k5qMHi7IMC7ktrPY3lZ+sL0Zm8oC0yz6re+y/zCj0H0/sGZ7yPBwGcb77i5vw6vCx8vsQDyuvmFb6PZbf03Auj/cs5IHDTYkKIcfbwz6zSU=",
+                        "3Cy+xMFsCjAek3TvXQNmCyfXCnFNAcAOyH5xtEaxvrvyyCS8PJnjOiq2t4Rtf/Gq",
+                        "8dUI0x3LRnxfN0miaYla46LFslJJiBDNdFiPJdqr37mYQVIzOWr+ROhyb1hpmg/QCM2qkIEWJfrJX3I+rwm0t0p4EGdEVOXQj7Z8vHFcbiA="
+                    ]
+                }
+            }
+        },
+        "127.0.0.1:8001": {
+            "pass": "applications/drive"
+        },
+        "*:8080": {
+            "pass": "upstreams/rr-lb",
+            "client_ip": {
+                "header": "X-Forwarded-For",
+                "source": [
+                    "192.168.0.0.0/16"
+                ]
+            }
+        }
+    },
+    "routes": {
+        "main": [
+            {
+                "match": {
+                    "uri": "/admin/*",
+                    "scheme": "https",
+                    "arguments": {
+                        "mode": "strict",
+                        "access": "!raw"
+                    },
+                    "cookies": {
+                        "user_role": "admin"
+                    }
+                },
+                "action": {
+                    "pass": "applications/cms"
+                }
+            }
+        ]
+    },
+    "applications": {
+        "blogs": {
+            "type": "php",
+            "targets": {
+                "admin": {
+                    "root": "/www/blogs/admin/",
+                    "script": "index.php"
+                },
+                "core": {
+                    "root": "/www/blogs/scripts/"
+                }
+            },
+            "limits": {
+                "timeout": 10,
+                "requests": 1000
+            },
+            "options": {
+                "file": "/etc/php.ini",
+                "admin": {
+                    "memory_limit": "256M",
+                    "variables_order": "EGPCS",
+                    "expose_php": "0"
+                },
+                "user": {
+                    "display_errors": "0"
+                }
+            },
+            "processes": {
+                "max": 10,
+                "spare": 5,
+                "idle_timeout": 20
+            }
+        },
+        "chat": {
+            "type": "external",
+            "executable": "bin/chat_app",
+            "group": "www-chat",
+            "user": "www-chat",
+            "working_directory": "/www/chat/",
+            "isolation": {
+                "namespaces": {
+                    "cgroup": false,
+                    "credential": true,
+                    "mount": false,
+                    "network": false,
+                    "pid": false,
+                    "uname": false
+                },
+                "uidmap": [
+                    {
+                        "host": 1000,
+                        "container": 0,
+                        "size": 1000
+                    }
+                ],
+                "gidmap": [
+                    {
+                        "host": 1000,
+                        "container": 0,
+                        "size": 1000
+                    }
+                ],
+                "automount": {
+                    "language_deps": false,
+                    "procfs": false,
+                    "tmpfs": false
+                }
+            }
+        },
+        "cms": {
+            "type": "ruby",
+            "script": "/www/cms/main.ru",
+            "working_directory": "/www/cms/",
+            "hooks": "hooks.rb"
+        },
+        "drive": {
+            "type": "perl",
+            "script": "app.psgi",
+            "threads": 2,
+            "thread_stack_size": 4096,
+            "working_directory": "/www/drive/",
+            "processes": {
+                "max": 10,
+                "spare": 5,
+                "idle_timeout": 20
+            }
+        },
+        "store": {
+            "type": "java",
+            "webapp": "/www/store/store.war",
+            "classpath": [
+                "/www/store/lib/store-2.0.0.jar"
+            ],
+            "options": [
+                "-Dlog_path=/var/log/store.log"
+            ]
+        },
+        "wiki": {
+            "type": "python",
+            "protocol": "asgi",
+            "targets": {
+                "internal": {
+                    "module": "internal.asgi"
+                },
+                "external": {
+                    "module": "external.asgi"
+                }
+            },
+            "environment": {
+                "DJANGO_SETTINGS_MODULE": "wiki.settings.prod",
+                "DB_ENGINE": "django.db.backends.postgresql",
+                "DB_NAME": "wiki",
+                "DB_HOST": "127.0.0.1",
+                "DB_PORT": "5432"
+            },
+            "path": [
+                "/www/wiki/"
+            ],
+            "processes": {
+                "max": 10,
+                "spare": 5,
+                "idle_timeout": 20
+            }
+        }
+    },
+    "upstreams": {
+        "rr-lb": {
+            "servers": {
+                "192.168.1.100:8080": {},
+                "192.168.1.101:8080": {
+                    "weight": 2
+                }
+            }
+        }
+    },
+    "access_log": "/var/log/access.log"
+}

@@ -1,0 +1,30 @@
+{
+    "type": "php",
+    "targets": {
+        "admin": {
+            "root": "/www/blogs/admin/",
+            "script": "index.php"
+        },
+        "core": {
+            "root": "/www/blogs/scripts/"
+        }
+    },
+    "limits": {
+        "timeout": 10,
+        "requests": 1000
+    },
+    "options": {
+        "file": "/etc/php.ini",
+        "admin": {
+            "memory_limit": "256M",
+            "variables_order": "EGPCS",
+            "expose_php": "0"
+        },
+        "user": {
+            "display_errors": "0"
+        }
+    },
+    "processes": {
+        "max": 4
+    }
+}

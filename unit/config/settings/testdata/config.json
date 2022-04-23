@@ -1,0 +1,19 @@
+{
+    "http": {
+        "header_read_timeout": 10,
+        "body_read_timeout": 10,
+        "send_timeout": 10,
+        "idle_timeout": 120,
+        "max_body_size": 6291456,
+        "static": {
+            "mime_types": {
+                "text/plain": [
+                    ".log",
+                    "README",
+                    "CHANGES"
+                ]
+            }
+        },
+        "discard_unsafe_fields": false
+    }
+}

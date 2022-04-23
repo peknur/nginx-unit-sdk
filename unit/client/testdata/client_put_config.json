@@ -1,0 +1,13 @@
+{
+    "main": [
+        {
+            "match": {
+                "uri": "/return/*"
+            },
+            "action": {
+                "return": 301,
+                "location": "https://www.example.com"
+            }
+        }
+    ]
+}

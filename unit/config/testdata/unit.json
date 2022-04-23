@@ -1,0 +1,11 @@
+{
+    "config": {
+        "settings": {
+            "http": {}
+        },
+        "applications": {},
+        "listeners": {},
+        "routes": {},
+        "access_log": "/var/log/access.log"
+    }
+}

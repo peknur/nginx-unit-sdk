@@ -1,0 +1,10 @@
+{
+    "type": "java",
+    "webapp": "/www/store/store.war",
+    "classpath": [
+        "/www/store/lib/store-2.0.0.jar"
+    ],
+    "options": [
+        "-Dlog_path=/var/log/store.log"
+    ]
+}

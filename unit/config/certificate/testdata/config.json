@@ -1,0 +1,47 @@
+{
+    "example.com": {
+        "key": "RSA (4096 bits)",
+        "chain": [
+            {
+                "subject": {
+                    "common_name": "example.com",
+                    "alt_names": [
+                        "example.com",
+                        "www.example.com"
+                    ],
+                    "country": "US",
+                    "state_or_province": "CA",
+                    "organization": "Acme, Inc."
+                },
+                "issuer": {
+                    "common_name": "intermediate.ca.example.com",
+                    "country": "US",
+                    "state_or_province": "CA",
+                    "organization": "Acme Certification Authority"
+                },
+                "validity": {
+                    "since": "Sep 18 19:46:19 2018 GMT",
+                    "until": "Jun 15 19:46:19 2021 GMT"
+                }
+            },
+            {
+                "subject": {
+                    "common_name": "intermediate.ca.example.com",
+                    "country": "US",
+                    "state_or_province": "CA",
+                    "organization": "Acme Certification Authority"
+                },
+                "issuer": {
+                    "common_name": "root.ca.example.com",
+                    "country": "US",
+                    "state_or_province": "CA",
+                    "organization": "Acme Root Certification Authority"
+                },
+                "validity": {
+                    "since": "Sep 18 19:46:19 2018 GMT",
+                    "until": "Jun 15 19:46:19 2021 GMT"
+                }
+            }
+        ]
+    }
+}

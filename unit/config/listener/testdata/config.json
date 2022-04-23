@@ -1,0 +1,35 @@
+{
+    "*:8000": {
+        "pass": "routes",
+        "tls": {
+            "certificate": [
+                "example.com",
+                "example.com"
+            ],
+            "conf_commands": {
+                "ciphersuites": "TLS_CHACHA20_POLY1305_SHA256"
+            },
+            "session": {
+                "cache_size": 10240,
+                "timeout": 60,
+                "tickets": [
+                    "k5qMHi7IMC7ktrPY3lZ+sL0Zm8oC0yz6re+y/zCj0H0/sGZ7yPBwGcb77i5vw6vCx8vsQDyuvmFb6PZbf03Auj/cs5IHDTYkKIcfbwz6zSU=",
+                    "3Cy+xMFsCjAek3TvXQNmCyfXCnFNAcAOyH5xtEaxvrvyyCS8PJnjOiq2t4Rtf/Gq",
+                    "8dUI0x3LRnxfN0miaYla46LFslJJiBDNdFiPJdqr37mYQVIzOWr+ROhyb1hpmg/QCM2qkIEWJfrJX3I+rwm0t0p4EGdEVOXQj7Z8vHFcbiA="
+                ]
+            }
+        }
+    },
+    "127.0.0.1:8001": {
+        "pass": "applications/drive"
+    },
+    "*:8080": {
+        "pass": "upstreams/rr-lb",
+        "client_ip": {
+            "header": "X-Forwarded-For",
+            "source": [
+                "192.168.0.0.0/16"
+            ]
+        }
+    }
+}
