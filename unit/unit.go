@@ -3,36 +3,16 @@ package unit
 import (
 	"context"
 
+	"github.com/peknur/nginx-unit-sdk/unit/client"
 	"github.com/peknur/nginx-unit-sdk/unit/config"
 	"github.com/peknur/nginx-unit-sdk/unit/config/application"
 	"github.com/peknur/nginx-unit-sdk/unit/config/listener"
 	"github.com/peknur/nginx-unit-sdk/unit/config/route"
 	"github.com/peknur/nginx-unit-sdk/unit/config/upstream"
+	"github.com/peknur/nginx-unit-sdk/unit/service"
 )
 
-const (
-	CertificatesPath string = "certificates"
-	ConfigPath       string = "config"
-	ApplicationsPath string = "config/applications"
-	ListenersPath    string = "config/listeners"
-	RoutesPath       string = "config/routes"
-	UpstreamsPath    string = "config/upstreams"
-	SettingsPath     string = "config/settings"
-)
-
-type Client interface {
-	// Get returns the entity at the request URI.
-	Get(ctx context.Context, path string, v interface{}) error
-	// Put replaces the entity at the request URI.
-	Put(ctx context.Context, path string, v interface{}) error
-	// PutBinary replaces the entity at the request URI with data.
-	PutBinary(ctx context.Context, path string, data []byte) error
-	// Post updates the array at the request URI.
-	Post(ctx context.Context, path string, v interface{}) error
-	// Delete deletes the entity at the request URI.
-	Delete(ctx context.Context, path string) error
-}
-
+// Service interface defines methods that can be used to interact with Unit instance.
 type Service interface {
 	// Applications
 	Applications(ctx context.Context) (config.Applications, error)
@@ -73,4 +53,18 @@ type Service interface {
 	Settings(ctx context.Context) (config.Settings, error)
 	CreateSettings(ctx context.Context, c config.Settings) error
 	DeleteSettings(ctx context.Context) error
+}
+
+// NewServiceFromURL creates new service instance using URL as client base URL.
+func NewServiceFromURL(URL string) (Service, error) {
+	c, err := client.NewClient(URL)
+	if err != nil {
+		return nil, err
+	}
+	return NewService(c), nil
+}
+
+// NewService creates new service instance.
+func NewService(client service.Client) Service {
+	return service.New(client)
 }

@@ -9,6 +9,7 @@ import (
 	"os"
 	"testing"
 
+	"github.com/peknur/nginx-unit-sdk/unit"
 	"github.com/peknur/nginx-unit-sdk/unit/client"
 	"github.com/peknur/nginx-unit-sdk/unit/config"
 	"github.com/peknur/nginx-unit-sdk/unit/config/application"
@@ -16,14 +17,13 @@ import (
 	"github.com/peknur/nginx-unit-sdk/unit/config/route"
 	"github.com/peknur/nginx-unit-sdk/unit/config/settings"
 	"github.com/peknur/nginx-unit-sdk/unit/config/upstream"
-	"github.com/peknur/nginx-unit-sdk/unit/service"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 )
 
 const defaultUnitURL = "http://127.0.0.1:8080"
 
-var svc service.Service
+var svc unit.Service
 
 func TestMain(m *testing.M) {
 	flag.Parse()
@@ -35,11 +35,11 @@ func TestMain(m *testing.M) {
 	if u := os.Getenv("TEST_UNIT_URL"); u != "" {
 		URL = u
 	}
-	client, err := client.NewClient(URL)
+	var err error
+	svc, err = unit.NewServiceFromURL(URL)
 	if err != nil {
 		log.Fatal(err)
 	}
-	svc = service.New(client)
 	os.Exit(m.Run())
 }
 
@@ -262,11 +262,11 @@ func testSettings(ctx context.Context, t *testing.T) {
 }
 
 func Example() {
-	client, err := client.New("http://127.0.0.1:8080", nil)
+	client, err := client.New("http://127.0.0.1:8080", http.DefaultClient)
 	if err != nil {
 		log.Fatal(err)
 	}
-	svc = service.New(client)
+	svc := unit.NewService(client)
 	cfg := config.Config{
 		Settings: config.Settings{
 			HTTP: settings.HTTP{
@@ -296,4 +296,12 @@ func Example() {
 	if err := svc.CreateConfig(context.Background(), cfg); err != nil {
 		log.Fatal(err)
 	}
+}
+
+func ExampleNewServiceFromURL() {
+	svc, err := unit.NewServiceFromURL("http://127.0.0.1:8080")
+	if err != nil {
+		log.Fatal(err)
+	}
+	svc.Config(context.TODO())
 }
