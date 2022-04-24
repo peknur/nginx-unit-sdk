@@ -9,8 +9,6 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
-
-	"github.com/peknur/nginx-unit-sdk/unit"
 )
 
 type ResponseError struct {
@@ -29,8 +27,6 @@ type Client struct {
 	baseURL    *url.URL
 	httpClient *http.Client
 }
-
-var _ unit.Client = (*Client)(nil)
 
 // Get returns the entity at the request URI.
 func (c *Client) Get(ctx context.Context, path string, v interface{}) error {

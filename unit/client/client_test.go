@@ -8,11 +8,15 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/peknur/nginx-unit-sdk/unit"
 	"github.com/peknur/nginx-unit-sdk/unit/config"
 	"github.com/peknur/nginx-unit-sdk/unit/config/route"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
+)
+
+const (
+	configPath string = "config"
+	routesPath string = "config/routes"
 )
 
 func TestClientGet(t *testing.T) {
@@ -24,7 +28,7 @@ func TestClientGet(t *testing.T) {
 	client, err := New(srv.URL, nil)
 	require.NoError(t, err)
 	cfg := config.Config{}
-	err = client.Get(context.Background(), unit.ConfigPath, &cfg)
+	err = client.Get(context.Background(), configPath, &cfg)
 	assert.NoError(t, err)
 	assert.Equal(t, "/var/log/access.log", cfg.AccessLog)
 	assert.Equal(t, "https", cfg.Routes["main"][0].Match.Scheme)
@@ -55,7 +59,7 @@ func TestClientPut(t *testing.T) {
 			},
 		},
 	}
-	err = client.Put(context.Background(), unit.RoutesPath, &cfg)
+	err = client.Put(context.Background(), routesPath, &cfg)
 	assert.NoError(t, err)
 }
 func TestClientPost(t *testing.T) {
@@ -83,7 +87,7 @@ func TestClientPost(t *testing.T) {
 			},
 		},
 	}
-	err = client.Post(context.Background(), unit.RoutesPath, &cfg)
+	err = client.Post(context.Background(), routesPath, &cfg)
 	assert.NoError(t, err)
 }
 
@@ -93,6 +97,6 @@ func TestClienDelete(t *testing.T) {
 	}))
 	client, err := New(srv.URL, nil)
 	require.NoError(t, err)
-	err = client.Delete(context.Background(), unit.ConfigPath)
+	err = client.Delete(context.Background(), configPath)
 	assert.NoError(t, err)
 }
