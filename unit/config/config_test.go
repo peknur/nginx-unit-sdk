@@ -18,27 +18,9 @@ func TestConfigMarshall(t *testing.T) {
 		Routes:       Routes{},
 		Applications: Applications{},
 		Upstreams:    Upstreams{},
-		AccessLog:    "/var/log/access.log",
-	})
-	assert.NoError(t, err)
-	if !assert.JSONEq(t, string(expected), string(actual)) {
-		t.Log(string(actual))
-	}
-}
-
-func TestUnitMarshall(t *testing.T) {
-	expected, err := ioutil.ReadFile("testdata/unit.json")
-	assert.NoError(t, err)
-
-	actual, err := json.Marshal(Unit{
-		Certificates: Certificates{},
-		Config: Config{
-			Settings:     Settings{},
-			Listeners:    Listeners{},
-			Routes:       Routes{},
-			Applications: Applications{},
-			Upstreams:    Upstreams{},
-			AccessLog:    "/var/log/access.log",
+		AccessLog: AccessLog{
+			Path:   "/var/log/access.log",
+			Format: "$remote_addr - - [$time_local] \"$request_line\" $status $body_bytes_sent \"$header_referer\" \"$header_user_agent\"",
 		},
 	})
 	assert.NoError(t, err)

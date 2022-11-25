@@ -208,5 +208,8 @@
             }
         }
     },
-    "access_log": "/var/log/access.log"
+    "access_log": {
+        "path": "/var/log/access.log",
+        "format": ""
+    }
 }

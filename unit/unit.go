@@ -3,6 +3,7 @@ package unit
 import (
 	"context"
 
+	"github.com/peknur/nginx-unit-sdk/unit/certificate"
 	"github.com/peknur/nginx-unit-sdk/unit/client"
 	"github.com/peknur/nginx-unit-sdk/unit/config"
 	"github.com/peknur/nginx-unit-sdk/unit/config/application"
@@ -10,6 +11,7 @@ import (
 	"github.com/peknur/nginx-unit-sdk/unit/config/route"
 	"github.com/peknur/nginx-unit-sdk/unit/config/upstream"
 	"github.com/peknur/nginx-unit-sdk/unit/service"
+	"github.com/peknur/nginx-unit-sdk/unit/status"
 )
 
 // Service interface defines methods that can be used to interact with Unit instance.
@@ -45,7 +47,7 @@ type Service interface {
 	DeleteUpstream(ctx context.Context, name string) error
 
 	// Certificates
-	Certificates(ctx context.Context) (config.Certificates, error)
+	Certificates(ctx context.Context) (certificate.Certificates, error)
 	CreateCertificate(ctx context.Context, name string, bundle []byte) error
 	DeleteCertificate(ctx context.Context, name string) error
 
@@ -53,6 +55,9 @@ type Service interface {
 	Settings(ctx context.Context) (config.Settings, error)
 	CreateSettings(ctx context.Context, c config.Settings) error
 	DeleteSettings(ctx context.Context) error
+
+	// Status
+	Status(ctx context.Context) (status.Status, error)
 }
 
 // NewServiceFromURL creates new service instance using URL as client base URL.
@@ -68,3 +73,10 @@ func NewServiceFromURL(URL string) (Service, error) {
 func NewService(client service.Client) Service {
 	return service.New(client)
 }
+
+type Unit struct {
+	Certificates certificate.Certificates `json:"certificates,omitempty"`
+	Config       config.Config            `json:"config,omitempty"`
+}
+
+type Certificates map[string]certificate.Config

@@ -5,5 +5,8 @@
     "applications": {},
     "listeners": {},
     "routes": {},
-    "access_log": "/var/log/access.log"
+    "access_log": {
+        "path": "/var/log/access.log",
+        "format": "$remote_addr - - [$time_local] \"$request_line\" $status $body_bytes_sent \"$header_referer\" \"$header_user_agent\""
+    }
 }

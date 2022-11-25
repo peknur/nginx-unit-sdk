@@ -71,7 +71,12 @@
     },
     {
         "match": {
-            "scheme": "http"
+            "scheme": "http",
+            "method": "GET",
+            "headers": [
+                "X-IP"
+            ],
+            "destination": "127.0.0.1"
         },
         "action": {
             "proxy": "http://127.0.0.1:8080"
@@ -83,6 +88,7 @@
                 "/www/$host$uri",
                 "/www/global_static$uri"
             ],
+            "index": "default.html",
             "chroot": "/www/data/$host/",
             "traverse_mounts": false,
             "follow_symlinks": false,

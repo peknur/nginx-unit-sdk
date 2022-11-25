@@ -1,0 +1,23 @@
+{
+    "connections": {
+        "accepted": 1067,
+        "active": 13,
+        "idle": 4,
+        "closed": 1050
+    },
+    "requests": {
+        "total": 1307
+    },
+    "applications": {
+        "wp": {
+            "processes": {
+                "running": 14,
+                "starting": 0,
+                "idle": 4
+            },
+            "requests": {
+                "active": 10
+            }
+        }
+    }
+}

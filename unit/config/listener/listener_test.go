@@ -41,8 +41,10 @@ func TestListenersMarshall(t *testing.T) {
 			},
 			"*:8080": {
 				Pass: "upstreams/rr-lb",
-				ClientIP: &ClientIP{
-					Header: "X-Forwarded-For",
+				Forwarded: &Forwarded{
+					Protocol:  "X-Forwarded-Proto",
+					ClientIP:  "X-Forwarded-For",
+					Recursive: true,
 					Source: []string{
 						"192.168.0.0.0/16",
 					},

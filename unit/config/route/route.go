@@ -6,13 +6,16 @@ type Config struct {
 }
 
 type Match struct {
-	URI       string            `json:"uri,omitempty"`
-	Host      []string          `json:"host,omitempty"`
-	Source    []string          `json:"source,omitempty"`
-	Scheme    string            `json:"scheme,omitempty"`
-	Arguments map[string]string `json:"arguments,omitempty"`
-	Cookies   map[string]string `json:"cookies,omitempty"`
-	Query     []string          `json:"query,omitempty"`
+	URI         string            `json:"uri,omitempty"`
+	Host        []string          `json:"host,omitempty"`
+	Source      []string          `json:"source,omitempty"`
+	Scheme      string            `json:"scheme,omitempty"`
+	Arguments   map[string]string `json:"arguments,omitempty"`
+	Cookies     map[string]string `json:"cookies,omitempty"`
+	Query       []string          `json:"query,omitempty"`
+	Destination string            `json:"destination,omitempty"`
+	Headers     []string          `json:"headers,omitempty"`
+	Method      string            `json:"method,omitempty"`
 }
 
 type Action struct {
@@ -26,4 +29,5 @@ type Action struct {
 	Return         int               `json:"return,omitempty"`
 	Proxy          string            `json:"proxy,omitempty"`
 	Location       string            `json:"location,omitempty"`
+	Index          string            `json:"index,omitempty"`
 }

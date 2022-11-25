@@ -6,6 +6,8 @@ import (
 	"time"
 )
 
+type Certificates map[string]Config
+
 // Sample Sep 18 19:46:19 2018 GMT
 const CertificateTimeLayout = "Jan 02 15:04:05 2006 GMT"
 
