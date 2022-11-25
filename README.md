@@ -3,7 +3,7 @@
 [![Go Reference](https://pkg.go.dev/badge/github.com/peknur/nginx-unit-sdk/unit.svg)](https://pkg.go.dev/github.com/peknur/nginx-unit-sdk/unit)
 
 An unofficial [Nginx Unit](https://www.nginx.com/products/nginx-unit/) SDK for Go.  
-SDK is in alpha state and breaking changes might occur. Tested against Nginx Unit `v1.26`.
+SDK is in alpha state and breaking changes might occur. Tested against Nginx Unit `v1.28`.
 
 From the Nginx Unit authors:  
 *NGINX Unit is a dynamic application server, capable of running beside NGINX Plus and NGINX Open Source or standalone. NGINX Unit supports a RESTful JSON API, deploys configuration changes without service disruptions, and runs apps built with multiple languages and frameworks. Designed from scratch around the needs of your distributed applications, it lays the foundation for your.*
@@ -44,7 +44,9 @@ cfg := config.Config{
 			Group:            "www-data",
 		},
 	},
-	AccessLog: "/var/log/unit.log",
+	AccessLog: {
+		Path: "/var/log/unit.log",
+	}
 }
 
 if err := svc.CreateConfig(context.Background(), cfg); err != nil {

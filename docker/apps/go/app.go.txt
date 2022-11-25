@@ -1,8 +1,9 @@
 package main
 
 import (
-    "io";
-    "net/http";
+    "io"
+    "log"
+    "net/http"
     "unit.nginx.org/go"
 )
 
@@ -10,5 +11,7 @@ func main() {
     http.HandleFunc("/",func (w http.ResponseWriter, r *http.Request) {
         io.WriteString(w, "Hello, Go on Unit!")
     })
-    unit.ListenAndServe(":8080", nil)
+    if err := unit.ListenAndServe(":8081", nil); err != nil {
+        log.Fatal(err)
+    }
 }

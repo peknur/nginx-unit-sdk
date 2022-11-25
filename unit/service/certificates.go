@@ -4,11 +4,11 @@ import (
 	"context"
 	"path"
 
-	"github.com/peknur/nginx-unit-sdk/unit/config"
+	"github.com/peknur/nginx-unit-sdk/unit/certificate"
 )
 
-func (s *Service) Certificates(ctx context.Context) (config.Certificates, error) {
-	c := config.Certificates{}
+func (s *Service) Certificates(ctx context.Context) (certificate.Certificates, error) {
+	c := certificate.Certificates{}
 	return c, s.client.Get(ctx, certificatesPath, &c)
 }
 

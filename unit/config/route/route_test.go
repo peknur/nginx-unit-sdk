@@ -81,7 +81,10 @@ func TestRoutesMarshall(t *testing.T) {
 
 			{
 				Match: &Match{
-					Scheme: "http",
+					Scheme:      "http",
+					Destination: "127.0.0.1",
+					Headers:     []string{"X-IP"},
+					Method:      "GET",
 				},
 				Action: &Action{
 					Proxy: "http://127.0.0.1:8080",
@@ -93,6 +96,7 @@ func TestRoutesMarshall(t *testing.T) {
 						"/www/$host$uri",
 						"/www/global_static$uri",
 					},
+					Index:          "default.html",
 					Chroot:         "/www/data/$host/",
 					TraverseMounts: &traverseMounts,
 					FollowSymlinks: &followSymlinks,

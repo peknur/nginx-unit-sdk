@@ -1,14 +1,17 @@
 package listener
 
 type Config struct {
-	Pass     string    `json:"pass,omitempty"`
-	ClientIP *ClientIP `json:"client_ip,omitempty"`
-	TLS      *TLS      `json:"tls,omitempty"`
+	Pass      string     `json:"pass,omitempty"`
+	Forwarded *Forwarded `json:"forwarded,omitempty"`
+	TLS       *TLS       `json:"tls,omitempty"`
 }
 
-type ClientIP struct {
-	Header string   `json:"header,omitempty"`
-	Source []string `json:"source,omitempty"`
+type Forwarded struct {
+	ClientIP  string   `json:"client_ip,omitempty"`
+	Recursive bool     `json:"recursive,omitempty"`
+	Protocol  string   `json:"protocol,omitempty"`
+	Header    string   `json:"header,omitempty"`
+	Source    []string `json:"source,omitempty"`
 }
 
 type TLS struct {

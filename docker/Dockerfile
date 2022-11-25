@@ -1,4 +1,4 @@
-FROM nginx/unit:1.26.1-go1.17
+FROM nginx/unit:1.28.0-go1.19
 COPY apps /apps
 WORKDIR /apps/go
 RUN mv /apps/go/app.go.txt /apps/go/app.go && \

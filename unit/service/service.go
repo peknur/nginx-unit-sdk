@@ -5,6 +5,7 @@ import (
 )
 
 const (
+	statusPath       string = "status"
 	certificatesPath string = "certificates"
 	configPath       string = "config"
 	applicationsPath string = "config/applications"

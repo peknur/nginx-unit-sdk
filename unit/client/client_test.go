@@ -30,7 +30,7 @@ func TestClientGet(t *testing.T) {
 	cfg := config.Config{}
 	err = client.Get(context.Background(), configPath, &cfg)
 	assert.NoError(t, err)
-	assert.Equal(t, "/var/log/access.log", cfg.AccessLog)
+	assert.Equal(t, "/var/log/access.log", cfg.AccessLog.Path)
 	assert.Equal(t, "https", cfg.Routes["main"][0].Match.Scheme)
 }
 

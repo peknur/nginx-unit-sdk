@@ -7,6 +7,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"sync"
 	"testing"
 
 	"github.com/peknur/nginx-unit-sdk/unit"
@@ -21,7 +22,10 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
-const defaultUnitURL = "http://127.0.0.1:8080"
+const (
+	defaultUnitURL string = "http://127.0.0.1:8080"
+	appURL         string = "http://127.0.0.1:8081"
+)
 
 var svc unit.Service
 
@@ -53,7 +57,7 @@ func TestConfig(t *testing.T) {
 			},
 		},
 		Listeners: config.Listeners{
-			"*:80": listener.Config{
+			"*:8081": listener.Config{
 				Pass: "routes/main",
 			},
 		},
@@ -66,10 +70,14 @@ func TestConfig(t *testing.T) {
 					Action: &route.Action{
 						Return: http.StatusNotFound,
 					},
-				}},
+				},
+			},
 		},
 		Applications: config.Applications{},
-		AccessLog:    "/var/log/unit.log",
+		AccessLog: config.AccessLog{
+			Path:   "/var/log/access.log",
+			Format: "$remote_addr - - [$time_local] \"$request_line\" $status $body_bytes_sent \"$header_referer\" \"$header_user_agent\"",
+		},
 	}
 
 	assert.NoError(t, svc.CreateConfig(ctx, cfg))
@@ -90,14 +98,15 @@ func testListeners(ctx context.Context, t *testing.T) {
 	assert.NoError(t, svc.CreateListeners(ctx, config.Listeners{
 		"*:443": listener.Config{
 			Pass: "routes/main",
-			ClientIP: &listener.ClientIP{
-				Header: "X-Demo",
-				Source: []string{"127.0.0.1"},
+			Forwarded: &listener.Forwarded{
+				Recursive: true,
+				Protocol:  "X-Forwarded-Proto",
+				Source:    []string{"127.0.0.1"},
 			},
 		},
 	}))
 
-	assert.NoError(t, svc.CreateListener(ctx, "*:80", listener.Config{
+	assert.NoError(t, svc.CreateListener(ctx, "*:8081", listener.Config{
 		Pass: "routes/main",
 	}))
 
@@ -235,6 +244,17 @@ func testApplications(ctx context.Context, t *testing.T) {
 	apps, err := svc.Applications(ctx)
 	assert.NoError(t, err)
 	assert.Len(t, apps, 3)
+	assert.NoError(t, svc.CreateRoute(ctx, "main", []route.Config{
+		{
+			Match: &route.Match{
+				Scheme: "http",
+			},
+			Action: &route.Action{
+				Pass: "applications/app1",
+			},
+		},
+	}))
+	testStatus(ctx, t)
 	assert.NoError(t, svc.DeleteApplication(ctx, "go"))
 }
 
@@ -259,6 +279,24 @@ func testSettings(ctx context.Context, t *testing.T) {
 	s, err := svc.Settings(ctx)
 	assert.NoError(t, err)
 	assert.Equal(t, 20, s.HTTP.HeaderReadTimeout)
+}
+
+func testStatus(ctx context.Context, t *testing.T) {
+	var wg sync.WaitGroup
+	c := 50
+	for i := 0; i < c; i++ {
+		wg.Add(1)
+		go func() {
+			defer wg.Done()
+			_, err := http.Get(appURL)
+			assert.NoError(t, err)
+		}()
+	}
+	wg.Wait()
+	s, err := svc.Status(ctx)
+	assert.NoError(t, err)
+	assert.LessOrEqual(t, c, s.Requests.Total)
+	assert.LessOrEqual(t, c, s.Connections.Accepted)
 }
 
 func Example() {
@@ -290,7 +328,10 @@ func Example() {
 					},
 				}},
 		},
-		AccessLog: "/var/log/unit.log",
+		AccessLog: config.AccessLog{
+			Path:   "/var/log/access.log",
+			Format: "$remote_addr - - [$time_local] \"$request_line\" $status $body_bytes_sent \"$header_referer\" \"$header_user_agent\"",
+		},
 	}
 
 	if err := svc.CreateConfig(context.Background(), cfg); err != nil {
